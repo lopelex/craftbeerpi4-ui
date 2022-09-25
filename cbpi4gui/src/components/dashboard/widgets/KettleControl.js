@@ -1,4 +1,4 @@
-import { Slider } from "@material-ui/core";
+import { Slider, Tooltip } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import Dialog from "@material-ui/core/Dialog";
@@ -18,7 +18,7 @@ import { DashboardContext, useModel } from "../DashboardContext";
 import { configapi } from "../../data/configapi";
 import { createTheme , ThemeProvider} from '@material-ui/core/styles';
 import pink from "@material-ui/core/colors/pink";
-
+/*
 const theme = createTheme({
   overrides: {
     palette:{
@@ -61,7 +61,7 @@ const theme = createTheme({
     },
   },
 });
-
+*/
 
 const TargetTempDialog = ({ onClose, kettle, open }) => {
   let TEMP_UNIT = "TEMP_UNIT";
@@ -201,15 +201,24 @@ export const KettleControl = ({ id }) => {
         return "medium"
       }
     };
+    const placement = orientation === "vertical" ? "right" : "bottom"; 
     
     //console.log(kettle?.state, heater?.state  )
     return (
       <>
         <ButtonGroup size={size()} disabled={state.draggable || !model.props.kettle} orientation={orientation} color="primary" aria-label="contained primary button group">
-           {heater ? <Button variant={heater?.state ? "contained" : ""}  color="primary" startIcon={<WhatshotIcon />} onClick={() => toggle(kettle?.heater)}></Button>: ""}
-          {agitator ? <Button variant={agitator?.state ? "contained" : ""}  color="primary" startIcon={<CachedIcon />} onClick={() => toggle(kettle?.agitator)}></Button> : ""}
-          {kettle?.type ? <Button variant={kettle?.state ? "contained" : ""}  color="primary" startIcon={<DriveEtaIcon />} onClick={() => toggle_kettle_logic(kettle?.id)}></Button> : ""}
-          <Button variant=""  color="primary" onClick={() => setOpen(true)} startIcon={<TrackChangesIcon />}></Button>
+           {heater ? <Tooltip title="Heater" placement={placement}>
+            <Button variant={heater?.state ? "contained" : "outlined"}  color="primary" startIcon={<WhatshotIcon />} onClick={() => toggle(kettle?.heater)}></Button>
+            </Tooltip> : ""}
+          {agitator ? <Tooltip title="Agitator" placement={placement}>
+            <Button variant={agitator?.state ? "contained" : "outlined"}  color="primary" startIcon={<CachedIcon />} onClick={() => toggle(kettle?.agitator)}></Button>
+           </Tooltip> : ""}
+          {kettle?.type ? <Tooltip title="Auto mode" placement={placement}>
+            <Button variant={kettle?.state ? "contained" : "outlined"}  color="primary" startIcon={<DriveEtaIcon />} onClick={() => toggle_kettle_logic(kettle?.id)}></Button>
+           </Tooltip> : ""}
+          <Tooltip title="Target temperature" placement={placement}>
+            <Button variant="outlined"  color="primary" onClick={() => setOpen(true)} startIcon={<TrackChangesIcon />}></Button>
+          </Tooltip>  
         </ButtonGroup>
         
       <TargetTempDialog open={open} kettle={kettle} onClose={() => setOpen(false)} />

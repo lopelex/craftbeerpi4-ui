@@ -13,6 +13,7 @@ import './index.css';
 
 console.log("%cCraftBeerPi 4.0 🍻", "color:#8efa00; background:#000; font-size: 30pt");
 console.log("%cCreated with ♥️ by Manuel Fritsch", "color:#8efa00; background:#000; font-size: 10pt");
+
 const theme = createTheme({
   palette: {
     type: 'dark',
@@ -25,8 +26,18 @@ const theme = createTheme({
     fontFamily: [
       'Advent Pro',
     ].join(','),
-  }  
+  },
+  overrides: {
+    MuiTooltip: {
+      tooltip: {
+        fontSize: '1em',
+/*        color: 'yellow',
+        backgroundColor: 'red' */
+      }
+    }
+  }
 });
+
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
@@ -40,7 +51,6 @@ ReactDOM.render(
     </CBPiProvider>
     </AlertProvider>
     </ThemeProvider>
-    
   </React.StrictMode>,
   document.getElementById('root')
 );

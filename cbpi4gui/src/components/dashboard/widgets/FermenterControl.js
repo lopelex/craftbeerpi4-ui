@@ -1,4 +1,4 @@
-import { Slider } from "@material-ui/core";
+import { Slider, Tooltip } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import Dialog from "@material-ui/core/Dialog";
@@ -18,9 +18,9 @@ import { useCBPi, useFermenter } from "../../data";
 import { useActor } from "../../data/index";
 import { DashboardContext, useModel } from "../DashboardContext";
 import { configapi } from "../../data/configapi";
-import { createTheme , ThemeProvider} from '@material-ui/core/styles';
+import { createTheme , ThemeProvider } from '@material-ui/core/styles';
 import pink from "@material-ui/core/colors/pink";
-
+/*
 const theme = createTheme({
   overrides: {
     palette:{
@@ -63,7 +63,7 @@ const theme = createTheme({
     },
   },
 });
-
+*/
 
 const TargetTempDialog = ({ onClose, fermenter, open }) => {
   let TEMP_UNIT = "TEMP_UNIT";
@@ -302,7 +302,7 @@ export const FermenterControl = ({ id }) => {
   const toggle_fermenter_logic = (id) => {
     cbpi.actions.toggle_logic_fermenter(id);
   };
-
+  
     return useMemo(() => {
     const orientation = model?.props?.orientation === "horizontal" ? "horizontal" : "vertical";
     const size = () => {
@@ -316,18 +316,29 @@ export const FermenterControl = ({ id }) => {
         return "medium"
       }
     };
+    const placement = orientation === "vertical" ? "right" : "bottom"; 
     
     //console.log(kettle?.state, heater?.state  )
     return (
       <>
         <ButtonGroup size={size()} disabled={state.draggable || !model.props.fermenter} orientation={orientation} color="primary" aria-label="contained primary button group">
-           {heater ? <Button variant={heater?.state ? "contained" : ""}  color="primary" startIcon={<WhatshotIcon />} onClick={() => toggle(fermenter?.heater)}></Button>: ""}
-          {cooler ? <Button variant={cooler?.state ? "contained" : ""}  color="primary" startIcon={<AcUnitIcon />} onClick={() => toggle(fermenter?.cooler)}></Button> : ""}
-          {fermenter?.type ? <Button variant={fermenter?.state ? "contained" : ""}  color="primary" startIcon={<DriveEtaIcon />} onClick={() => toggle_fermenter_logic(fermenter?.id)}></Button> : ""}
-          <Button variant=""  color="primary" onClick={() => setOpen(true)} startIcon={<TrackChangesIcon />}></Button>
-          {valve ? <Button variant=""  color="primary" onClick={() => setOpenp(true)} startIcon={<SpeedIcon />}></Button>: ""}
+          {heater ? <Tooltip title="Heater" placement={placement}>
+            <Button variant={heater?.state ? "contained" : "outlined"}  color="primary" startIcon={<WhatshotIcon />} onClick={() => toggle(fermenter?.heater)}></Button>
+          </Tooltip> : ""}
+          {cooler ? <Tooltip title="Cooler" placement={placement}>
+            <Button variant={cooler?.state ? "contained" : "outlined"}  color="primary" startIcon={<AcUnitIcon />} onClick={() => toggle(fermenter?.cooler)}></Button>
+          </Tooltip> : ""}
+          {fermenter?.type ? <Tooltip title="Auto mode" placement={placement}>
+            <Button variant={fermenter?.state ? "contained" : "outlined"}  color="primary" startIcon={<DriveEtaIcon />} onClick={() => toggle_fermenter_logic(fermenter?.id)}></Button>
+          </Tooltip> : ""}
+          <Tooltip title="Target temperature" placement={placement}>
+            <Button variant="outlined"  color="primary" onClick={() => setOpen(true)} startIcon={<TrackChangesIcon />}></Button>
+          </Tooltip>
+          {valve ? <Tooltip title="Set target pressure" placement={placement}>
+            <Button variant="outlined" color="primary" onClick={() => setOpenp(true)} startIcon={<SpeedIcon />}></Button>
+          </Tooltip> : ""}
         </ButtonGroup>
-        
+  
       <TargetTempDialog open={open} fermenter={fermenter} onClose={() => setOpen(false)} />
       <TargetPressureDialog open={openp} fermenter={fermenter} onClose={() => setOpenp(false)} />
       </>
