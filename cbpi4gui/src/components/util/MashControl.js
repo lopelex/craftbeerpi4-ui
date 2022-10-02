@@ -1,4 +1,4 @@
-import { Button, ButtonGroup } from "@material-ui/core";
+import { Button, ButtonGroup, Tooltip } from "@material-ui/core";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import RotateLeftIcon from "@material-ui/icons/RotateLeft";
 import StopIcon from "@material-ui/icons/Stop";
@@ -50,6 +50,7 @@ const MashControl = ({disabled=false}) => {
     <>
     <ButtonGroup disabled={disabled} fullWidth>
       {start ? (
+        <Tooltip title="Start">
         <Button
           variant="contained"
           color="primary"
@@ -60,9 +61,11 @@ const MashControl = ({disabled=false}) => {
         >
           
         </Button>
+        </Tooltip>
       ) : null}
 
       {next ? (
+        <Tooltip title="Next step">
         <Button
           variant="contained"
           color="primary"
@@ -73,9 +76,11 @@ const MashControl = ({disabled=false}) => {
         >
           
         </Button>
+        </Tooltip>
       ) : null}
 
       {stop ? (
+        <Tooltip title="Stop">
         <Button
           variant="contained"
           color="secondary"
@@ -86,12 +91,15 @@ const MashControl = ({disabled=false}) => {
         >
           
         </Button>
+        </Tooltip>
       ) : null}
 
       {reset ? (
+        <Tooltip title="Reset">
         <Button startIcon={<RotateLeftIcon />} variant="contained" color="secondary" onClick={() => stepapi.reset()}>
           
         </Button>
+        </Tooltip>
       ) : null}
       </ButtonGroup>
     </>

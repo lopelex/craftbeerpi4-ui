@@ -1,4 +1,4 @@
-import { Button, ButtonGroup } from "@material-ui/core";
+import { Button, ButtonGroup, Tooltip } from "@material-ui/core";
 import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 import RotateLeftIcon from "@material-ui/icons/RotateLeft";
 import StopIcon from "@material-ui/icons/Stop";
@@ -8,7 +8,6 @@ import { fermenterapi } from "../data/fermenterapi";
 import SkipNextIcon from '@material-ui/icons/SkipNext';
 
 
-
 const FermenterControl = ({fermenterid=null, disabled=false}) => {
   const { state } = useCBPi();
   const [stop, setStop] = useState(null);
@@ -16,7 +15,7 @@ const FermenterControl = ({fermenterid=null, disabled=false}) => {
   const [start, setStart] = useState(null);
   const [next, setNext] = useState(null);
   const [steps, setSteps] = useState([]);
-
+  
   useEffect(() => {
   
     if (fermenterid) {  
@@ -55,11 +54,12 @@ const FermenterControl = ({fermenterid=null, disabled=false}) => {
   if( steps.length === 0) {
     return <></>
   }
-
+  
   return (
     <>
     <ButtonGroup disabled={disabled} fullWidth>
       {start ? (
+        <Tooltip title="Start step">
         <Button
           variant="contained"
           color="primary"
@@ -70,9 +70,11 @@ const FermenterControl = ({fermenterid=null, disabled=false}) => {
         >
           
         </Button>
+        </Tooltip>
       ) : null}
 
       {next ? (
+        <Tooltip title="Next step">
         <Button
           variant="contained"
           color="primary"
@@ -83,9 +85,11 @@ const FermenterControl = ({fermenterid=null, disabled=false}) => {
         >
           
         </Button>
+        </Tooltip>
       ) : null}
 
       {stop ? (
+        <Tooltip title="Stop">
         <Button
           variant="contained"
           color="secondary"
@@ -96,12 +100,15 @@ const FermenterControl = ({fermenterid=null, disabled=false}) => {
         >
           
         </Button>
+        </Tooltip>
       ) : null}
 
       {reset ? (
+        <Tooltip title="Reset">
         <Button startIcon={<RotateLeftIcon />} variant="contained" color="secondary" onClick={() => fermenterapi.reset(fermenterid)}>
           
         </Button>
+        </Tooltip>
       ) : null}
       </ButtonGroup>
     </>

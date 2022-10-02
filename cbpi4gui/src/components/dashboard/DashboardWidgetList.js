@@ -68,7 +68,7 @@ const DashboardWidgetList = () => {
             {state.widget_list.map((item) => (
               <DashboardSidebarListItem key={item.name} item={item} />
             ))}
-            <ListItem
+            <Tooltip title="Pipe" placement="right"><ListItem
               key="path"
               button
               onClick={() => {
@@ -78,7 +78,7 @@ const DashboardWidgetList = () => {
               <ListItemIcon className={classes.icon}><CBPiPipeIcon/></ListItemIcon>
               
             </ListItem>
-            
+           </Tooltip> 
           </List>
         </Collapse>
       </List>

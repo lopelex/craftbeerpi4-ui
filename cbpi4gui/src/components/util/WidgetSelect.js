@@ -17,7 +17,7 @@ import { useDashboard } from "../dashboard/DashboardContext";
             value={value}
             onChange={onChange}>
                 <MenuItem  key="none" value="">---</MenuItem>
-            {state.widgets.map((item,index) => <MenuItem  key={index} value={item}>{item}</MenuItem>)}
+            {state.widgets.map((item,index) => <MenuItem  key={index} value={item}><img src={`/dashboard/static/${item}.svg`}  width={48} height="auto" className="no-drag"  alt="---" style={{margin: '0px 5px'}}/>{item}</MenuItem>)}
         </Select>
     </>
 }
