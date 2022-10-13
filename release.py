@@ -10,7 +10,7 @@ def main():
 @click.option('-m', prompt='Commit Message')
 def commit(m):
 
-    file = "./cbpi4ui/version.py"
+    file = "./cbpi4gui/version.py"
     with open(file) as reader:
         match = re.search('.*\"(.*)\"', reader.readline())
         major, minor, patch  = match.group(1).split(".")
@@ -20,7 +20,7 @@ def commit(m):
         with open(file,'w',encoding = 'utf-8') as file:
             file.write(new_version)
 
-    subprocess.run(["npm", "run", "build"], cwd="./cbpi4ui")
+    subprocess.run(["npm", "run", "build"], cwd="./cbpi4gui")
     subprocess.run(["git", "add", "-A"])
     subprocess.run(["git", "commit", "-m", "\"{}\"".format(m)])
     subprocess.run(["git", "push"])
@@ -28,7 +28,7 @@ def commit(m):
 
 @click.command()
 def build():
-    subprocess.run(["npm", "run", "build"], cwd="./cbpi4ui")
+    subprocess.run(["npm", "run", "build"], cwd="./cbpi4gui")
     subprocess.run(["python3", "setup.py", "sdist"])
     
 
@@ -36,7 +36,7 @@ def build():
 @click.command()
 def release():
     subprocess.run(["python3", "setup.py", "sdist"])
-    file = "./cbpi4ui/version.py"
+    file = "./cbpi4gui/version.py"
     with open(file) as reader:
         match = re.search('.*\"(.*)\"', reader.readline())
         version = match.group(1)
