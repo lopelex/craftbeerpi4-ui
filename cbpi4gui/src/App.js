@@ -9,6 +9,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import MenuIcon from "@material-ui/icons/Menu";
 import NotificationsIcon from "@material-ui/icons/Notifications";
+import NotificationsOffIcon from '@mui/icons-material/NotificationsOff';
 import React, {useRef, useLayoutEffect, useState} from "react";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import "./App.css";
@@ -36,7 +37,7 @@ import FermenterRecipes from "./components/fermenterrecipes";
 import RecipeEditor from "./components/recipes/RecipeEditor";
 import FermenterRecipeEditor from "./components/fermenterrecipes/FermenterRecipeEditor";
 import { Charting } from "./components/charting";
-
+import { useCBPi } from './components/data';
 
 const drawerWidth = 240;
 
@@ -141,6 +142,8 @@ const CraftBeerPiApp = () => {
   const [appBarHeight, setAppBarHeight] = useState(64);
   const [open, setOpen] = useState(false);
   const [brewery,setBrewery] = useState("CraftBeerPi 4.0");
+  const { state, actions } = useCBPi()
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -148,8 +151,8 @@ const CraftBeerPiApp = () => {
   configapi.getone('BREWERY_NAME', (data) => {
     if (data){
       setBrewery(data);
-       }
-      });
+    }
+  });
   
   useLayoutEffect(() => {
     const updateNavBarHeight = () => {
@@ -164,6 +167,10 @@ const CraftBeerPiApp = () => {
     return () => window.removeEventListener("resize", updateNavBarHeight);
   }, []);
   
+  const toogleSound = () => {
+    actions.setSound(!state.sound);
+  };
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -183,7 +190,7 @@ const CraftBeerPiApp = () => {
                 </div>
                 <IconButton color="inherit">
                   <Badge badgeContent={0} color="secondary">
-                    <NotificationsIcon />
+                    { state.sound ? <NotificationsIcon onClick={toogleSound} /> : <NotificationsOffIcon onClick={toogleSound} /> }
                   </Badge>
                 </IconButton>
               </Toolbar>

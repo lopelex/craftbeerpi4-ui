@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import React, { createContext, useCallback, useContext, useMemo, useState, useImperativeHandle } from "react";
 
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -8,7 +8,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import React from "react";
+import { useCBPi } from '../data';
 
 import { notificationapi } from "../data/notificationapi";
 
@@ -54,9 +54,39 @@ const useStyles = makeStyles((theme) => ({
 
 export const AlertContext = createContext({});
 
-export const AlertProvider = ({ children }) => {
+export const AlertProvider = React.forwardRef((props, ref) => {
   const classes = useStyles();
   const [alerts, setAlerts] = useState([]);
+  const { state } = useCBPi();
+
+  useImperativeHandle(
+    ref,
+    () => ({
+        showAlert(id, title = "", message = "", type = "info", action = null, timeout = 5000) {
+            show(id, title, message, type, action, timeout);
+        }
+    }),
+  )
+
+  const isPlaying = (audio) => {
+    return audio
+        && audio.currentTime > 0
+        && !audio.paused
+        && !audio.ended
+        && audio.readyState > 2;
+  };
+
+  const url = '/cbpi_ui/static/sound.mp3';
+  const audio = new Audio(url);
+
+  const play = () =>  {
+    if (!isPlaying(audio)) {
+      var result = audio.play();
+      if (result !== undefined) {
+        result.then(() => {}).catch(error => {});
+      }
+    }
+  };
 
   const remove = useCallback((id) => {
     setAlerts((value) => {
@@ -80,6 +110,9 @@ export const AlertProvider = ({ children }) => {
     }
 
     setAlerts((state) => state.concat(alert));
+    if (state.sound){
+      play();
+    }
     return alert;
   }, []);
 
@@ -89,9 +122,10 @@ export const AlertProvider = ({ children }) => {
     remove,
   };
 
+
   return (
     <AlertContext.Provider value={value}>
-      {children}
+      {props.children}
 
       <div className={classes.root}>
         {alerts.map((a) => {
@@ -104,7 +138,7 @@ export const AlertProvider = ({ children }) => {
       </div>
     </AlertContext.Provider>
   );
-};
+});
 
 export const useAlert = (Context) => {
   const alertContext = useContext(AlertContext);

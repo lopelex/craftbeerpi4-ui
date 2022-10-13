@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import CraftBeerPiApp from './App';
 import { AlertProvider } from './components/alert/AlertProvider';
-import { CBPiProvider } from './components/data';
+import { CBPiProvider, alertRef } from './components/data';
 import './index.css';
 // import reportWebVitals from './reportWebVitals';
 // import ReactGA from 'react-ga';
@@ -41,15 +41,13 @@ const theme = createTheme({
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-    <AlertProvider>
-    <CBPiProvider>
-     
-    
-      <CraftBeerPiApp />
-     
-    
-    </CBPiProvider>
-    </AlertProvider>
+      <CBPiProvider>
+        <AlertProvider ref={alertRef}>     
+      
+          <CraftBeerPiApp /> 
+      
+        </AlertProvider>
+      </CBPiProvider>
     </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')

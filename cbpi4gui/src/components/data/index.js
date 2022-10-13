@@ -1,9 +1,9 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import CBPiWebSocket from "./websocket";
 import { actorapi } from "./actorapi";
 import { useEventCallback } from "@material-ui/core";
-import { useAlert } from "../alert/AlertProvider";
+//import { useAlert } from "../alert/AlertProvider";
 import { kettleapi } from "./kettleapi";
 import { fermenterapi } from "./fermenterapi";
 import { sensorapi } from "./sensorapi";
@@ -16,6 +16,8 @@ const messageTypes = {
 };
 
 export const CBPiContext = createContext({});
+
+export const alertRef = React.createRef();
 
 export const CBPiProvider = ({ children }) => {
   const [sensors, setSensors] = useState([]);
@@ -36,12 +38,12 @@ export const CBPiProvider = ({ children }) => {
   const [temp, setTemp] = useState("");
   const [version, setVersion] = useState("---");
   const [codename, setCodename] = useState("---");
-  const a = useAlert();
   const [notification, setNotifiaction] = useState("");
   const [fermenter, setFermenter] = useState([]);
   const [fermenterlogic, setFermenterLogic] = useState([]);
   const [fermentersteps, setFermenterSteps] = useState([]);
   const [connection, setConnection] = useState(false);
+  const [sound, setSound] = useState(false);
 
   const onMessage = useCallback((data) => {
     //console.log("WS", data);
@@ -73,13 +75,13 @@ export const CBPiProvider = ({ children }) => {
         setSensors(() => data.data);
         break;
       case "connection/success":
-          setConnection(true);
-          break;
+        setConnection(true);
+        break;
       case "connection/lost":
-          setConnection(false);
-          break;
+        setConnection(false);
+        break;
       case "notifiaction":
-        a.show(data.id, data.title, data.message, data.type, data.action);
+        alertRef.current.showAlert(data.id, data.title, data.message, data.type, data.action);
         break;
       default:
         break;
@@ -116,6 +118,7 @@ export const CBPiProvider = ({ children }) => {
       setStepTypesFermenter(Object.values(data.fermenter.steptypes));
       setAuth(true);
       setConnection(true);
+      setSound(true);
     });
   }, []);
 
@@ -158,7 +161,7 @@ export const CBPiProvider = ({ children }) => {
 
   const value = {
     state: { sensors, version, codename, actors, logic, kettle, fermenter, fermenterlogic, auth, plugins, temp, sensorData, 
-             actorTypes, sensorTypes, config, mashProfile, fermentersteps, FermenterProfile, mashBasic, stepTypes, stepTypesFermenter, connection },
+             actorTypes, sensorTypes, config, mashProfile, fermentersteps, FermenterProfile, mashBasic, stepTypes, stepTypesFermenter, connection, sound },
     actions: {
       delete_kettle,
       add_kettle,
@@ -182,6 +185,7 @@ export const CBPiProvider = ({ children }) => {
       get_sensor_by_id,
       get_step_by_id,
       get_fermentersteps_by_id,
+      setSound
     },
   };
 
@@ -203,6 +207,7 @@ export const useCBPi = (Context) => {
       sensor: state.sensors,
       sensorTypes: state.sensorTypes,
       config: state.config,
+      sound: state.sound,
       actions,
     };
   }, [state]);
